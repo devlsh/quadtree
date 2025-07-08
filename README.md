@@ -6,7 +6,7 @@
   <h3>A fast and efficient TypeScript Quadtree.</h3>
 </div>
 
-> **Not sure what a Quadtree is?** A Quadtree is a way of splitting a game world (or other 2D space) in to separate spatial nodes, allowing a more efficient way to query which objects are in a given area. [Read more here](#explanation)!
+> **Not sure what a Quadtree is?** A Quadtree is a way of splitting a game world (or other 2D space) in to separate spatial nodes, allowing a more efficient way to query which objects are in a given area. [Read more here](#what-is-a-quadtree)!
 
 ## Installation
 
