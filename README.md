@@ -1,8 +1,8 @@
 <div align="center">
-  <a href="https://www.npmjs.com/package/@evilkiwi/quadtree" target="_blank">
-    <img src="https://img.shields.io/npm/v/@evilkiwi/quadtree?style=flat-square" alt="NPM" />
+  <a href="https://www.npmjs.com/package/@devlsh/quadtree" target="_blank">
+    <img src="https://img.shields.io/npm/v/@devlsh/quadtree?style=flat-square" alt="NPM" />
   </a>
-  <img src="https://img.shields.io/npm/l/@evilkiwi/quadtree?style=flat-square" alt="GPL-3.0-only" />
+  <img src="https://img.shields.io/npm/l/@devlsh/quadtree?style=flat-square" alt="GPL-3.0-only" />
   <h3>A fast and efficient TypeScript Quadtree.</h3>
 </div>
 
@@ -11,7 +11,7 @@
 ## Installation
 
 ```bash
-npm install @evilkiwi/quadtree
+npm install @devlsh/quadtree
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ npm install @evilkiwi/quadtree
 The library exposes a single class, `Quadtree`, which you can use to insert and query objects.
 
 ```typescript
-import { Quadtree } from '@evilkiwi/quadtree';
+import { Quadtree } from '@devlsh/quadtree';
 
 // First, we create the Quadtree.
 const tree = new Quadtree({

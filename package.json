@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "@evilkiwi/quadtree",
+  "name": "@devlsh/quadtree",
   "version": "2.0.0",
   "sideEffects": false,
   "packageManager": "pnpm@10.12.4",
@@ -26,13 +26,13 @@
     "url": "https://evil.kiwi",
     "email": "support@evil.kiwi"
   },
-  "homepage": "https://github.com/evilkiwi/quadtree",
+  "homepage": "https://github.com/devlsh/quadtree",
   "bugs": {
-    "url": "https://github.com/evilkiwi/quadtree/issues"
+    "url": "https://github.com/devlsh/quadtree/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/evilkiwi/quadtree.git"
+    "url": "git+https://github.com/devlsh/quadtree.git"
   },
   "keywords": [
     "typescript",
@@ -44,6 +44,7 @@
     "commit": "better-commits",
     "lint": "biome check --error-on-warnings",
     "prepublishOnly": "pnpm build",
+    "test:package": "pnpm build && node scripts/verify-package.mjs",
     "typecheck": "tsc --noEmit --incremental"
   },
   "devDependencies": {
