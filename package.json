@@ -44,7 +44,6 @@
     "commit": "better-commits",
     "lint": "biome check --error-on-warnings",
     "prepublishOnly": "pnpm build",
-    "test:package": "pnpm build && node scripts/verify-package.mjs",
     "typecheck": "tsc --noEmit --incremental"
   },
   "devDependencies": {
