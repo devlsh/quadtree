@@ -4,8 +4,8 @@ export interface Options {
   y?: number;
   width: number;
   height: number;
-  max_depth: number;
-  max_objects: number;
+  maxDepth: number;
+  maxObjects: number;
 }
 
 export interface Rect {

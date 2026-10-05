@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #d4b5f1;
+}
+
+#canvas {
+  position: fixed;
+  inset: 0;
+}
+
+#canvas canvas {
+  display: block;
+}

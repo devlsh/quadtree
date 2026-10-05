@@ -1,135 +1,112 @@
-<div align="center">
-  <a href="https://www.npmjs.com/package/@devlsh/quadtree" target="_blank">
-    <img src="https://img.shields.io/npm/v/@devlsh/quadtree?style=flat-square" alt="NPM" />
-  </a>
-  <img src="https://img.shields.io/npm/l/@devlsh/quadtree?style=flat-square" alt="GPL-3.0-only" />
-  <h3>A fast and efficient TypeScript Quadtree.</h3>
-</div>
+<p align="center">
+  <h1 align="center">@devlsh/quadtree</h1>
+  <p align="center">A lightweight TypeScript quadtree for spatial indexing.</p>
+</p>
 
-> **Not sure what a Quadtree is?** A Quadtree is a way of splitting a game world (or other 2D space) in to separate spatial nodes, allowing a more efficient way to query which objects are in a given area. [Read more here](#what-is-a-quadtree)!
+<br />
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@devlsh/quadtree" rel="nofollow">
+    <img src="https://img.shields.io/npm/dm/%40devlsh%2Fquadtree?style=flat-square" alt="NPM Downloads" />
+  </a>
+  <a href="https://github.com/devlsh/quadtree/stargazers" rel="nofollow">
+    <img src="https://img.shields.io/github/stars/devlsh/quadtree?style=flat-square" alt="GitHub Stars" />
+  </a>
+  <a href="https://github.com/devlsh/quadtree/actions/workflows/validate.yml" rel="nofollow">
+    <img src="https://img.shields.io/github/actions/workflow/status/devlsh/quadtree/validate.yml?style=flat-square" alt="Build Status" />
+  </a>
+  <a href="https://github.com/devlsh/quadtree/blob/main/LICENSE" rel="nofollow">
+    <img src="https://img.shields.io/github/license/devlsh/quadtree?style=flat-square" alt="Software License" />
+  </a>
+</p>
+
+<br />
+
+- [Interactive demo](https://quadtree.devlsh.com).
+- TypeScript generics for custom object types.
+- Single-object and batch insertion.
+- Configurable bounds, tree depth, and subdivision thresholds.
+- Spatial queries for collision candidates.
+- Zero runtime dependencies.
+
+> Not sure what a quadtree is or why it helps? Check out ["What are quadtrees"](https://www.youtube.com/watch?v=-OLQlDHCMgM) on YouTube.
+
+<br />
 
 ## Installation
 
 ```bash
-npm install @devlsh/quadtree
+$ npm install @devlsh/quadtree
 ```
 
 ## Usage
 
-The library exposes a single class, `Quadtree`, which you can use to insert and query objects.
+```ts
+import { Quadtree, type Rect } from '@devlsh/quadtree';
 
-```typescript
-import { Quadtree } from '@devlsh/quadtree';
+/**
+ * If you want custom data (such as an ID) attached to objects, you can pass in a
+ * generic based on `Rect`.
+ */
+interface Entity extends Rect {
+  id: string;
+}
 
-// First, we create the Quadtree.
-const tree = new Quadtree({
-  width: 1024, // The width of the game world.
-  height: 1024, // The height of the game world.
-  max_depth: 12, // The maximum depth of the quadtree - i.e. how many times it can split in to quads.
-  max_objects: 15, // The maximum number of objects that can be in a quad before it splits.
+const tree = new Quadtree<Entity>({
+  width: 1024, // World/canvas width.
+  height: 1024, // World/canvas height.
+  maxDepth: 12, // Limit how many times regions subdivide.
+  maxObjects: 15, // Split crowded regions into four; not a hard cap at maxDepth.
 });
 
-// Next, we insert some objects.
-tree.insert({
-  // All objects require a unique ID.
+const object: Entity = {
   id: 'object-1',
-  // The position and size of the object.
   x: 489,
   y: 200,
   width: 20,
   height: 20,
-});
+};
 
-// You can also insert multiple objects at once.
-tree.insertAll([
-  {
-    id: 'object-2',
-    x: 460,
-    y: 190,
-    width: 20,
-    height: 20,
-  },
-  {
-    id: 'object-3',
-    x: 1000,
-    y: 1000,
-    width: 20,
-    height: 20,
-  },
-]);
-```
+const others: Entity[] = [
+  { id: 'object-2', x: 460, y: 190, width: 20, height: 20 },
+  { id: 'object-3', x: 1000, y: 1000, width: 20, height: 20 },
+];
 
-### Querying Objects
+tree.insert(object);
+tree.insertAll(others);
 
-Once you've inserted some objects into the Quadtree, you can query it for objects that are in a given area. **The Objects returned are just in the quad(s) that cover the given area** - meaning they may not be within the requested area, but are close enough that you can do collision detection on them.
+/**
+ * Candidates are not exact collisions - they are neighboring spatial objects.
+ * Apply your own collision check afterward.
+ */
+const candidates = tree.retrieve({ x: 480, y: 180, width: 100, height: 100 });
 
-```typescript
-const objects = tree.retrieve({
-  x: 480,
-  y: 180,
-  width: 100,
-  height: 100,
-});
+/**
+ * Rectangles spanning child boundaries can repeat; `Set` deduplicates references.
+ * TODO: do this internally.
+ */
+const uniqueCandidates = [...new Set(candidates)];
 
-console.log(objects);
-
-// [
-//   {
-//     id: 'object-1',
-//     x: 489,
-//     y: 200,
-//     width: 20,
-//     height: 20,
-//   },
-//   {
-//     id: 'object-2',
-//     x: 460,
-//     y: 190,
-//     width: 20,
-//     height: 20,
-//   },
-// ]
-```
-
-### Updating Objects
-
-You can't update objects once they've been inserted into the Quadtree, given it has to rebuild the quads every time an object is updated. Instead, you can use the `clear()` method to remove all objects from the Quadtree, and then insert them again.
-
-```typescript
-// First, we clear the Quadtree.
+/**
+ * No update/remove methods: after moving objects, clear and reinsert all current objects.
+ */
+object.x = 600;
 tree.clear();
-
-// Then we re-insert the objects with their updated positions.
-tree.insert({
-  id: 'object-1',
-  x: 450,
-  y: 195,
-  width: 20,
-  height: 20,
-});
-
-...
+tree.insertAll([object, ...others]);
 ```
 
-## What is a Quadtree?
+## Contributing
 
-A regular way of checking collisions in a game would be getting `ObjectA` and checking it's position against every other Object/Entity in my
-game, and then doing the same for every other Object/Entity. This is minimal with a smaller amount of entities, but isn't scalable. And
-whilst you _can_ optimise this somewhat, it fundamentally cannot scale. This method is called the `n^2` method, as if you have 100
-Object/Entities, you'll need to do 100^2 checks to run the collision logic (10,000 checks).
+Report bugs through [issues](https://github.com/devlsh/quadtree/issues) or ask questions in [Discussions](https://github.com/devlsh/quadtree/discussions). Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
-The idea behind a Quadtree in Game Development is to get around this by having spacial awareness. For example, if I'm checking collisions
-for `ObjectA`, I only need to check the other Entities/Objects that are around it - there's no point checking for collision against an
-Entity that's on the other side of the game world. You could do something similar to this in the `n^2` method by looping over every single
-Object/Entity, checking whether its position is close to `ObjectA` and only then running collision logic on it, but this is still
-fundamentally unscalable as you are still doing _some_ level of logic on _every_ Object/Entity in the game world, hence the performance
-bottlenecks of `n^2` still apply.
+For local development, pull requests, and other contributions, see the [Contributing Guidelines](CONTRIBUTING.md).
 
-A Quadtree does this by taking Objects that you supply it (In Game Dev, these would be Entities), and then subdividing the game world in to
-quads based on how many Objects are in a given area. For example, see this image:
+## License
 
-![Example 1](https://i.imgur.com/AlY7vtN.png)
+`@devlsh/quadtree` is free and open-source software licensed under the [MIT License](LICENSE).
 
-The blue lines show the quads that were generated by the quadtree after inserting the red objects (Entities).
+---
 
-For more information on Quadtrees and how they work, check out this video: [What are Quadtrees](https://www.youtube.com/watch?v=-OLQlDHCMgM).
+> [devlsh.com](https://devlsh.com) &nbsp;&middot;&nbsp;
+> GitHub: [@devlsh](https://github.com/devlsh) &nbsp;&middot;&nbsp;
+> X: [@itsdevlsh](https://x.com/itsdevlsh)
