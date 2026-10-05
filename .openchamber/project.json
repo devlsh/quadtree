@@ -4,6 +4,7 @@
   "setupWorktreeWait": true,
   "setupWorktree": [
     "git config --local core.hooksPath \"$ROOT_PROJECT_PATH/.git/hooks\"",
+    "direnv allow",
     "devenv tasks run quadtree:install"
   ]
 }
