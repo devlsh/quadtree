@@ -1,8 +1,8 @@
 import { type Options, type Rect } from './types';
 
 /**
- * Indexes rectangle references for spatial candidate queries. Objects spanning
- * child boundaries can appear more than once in results.
+ * Indexes rectangle references for spatial candidate queries. Retrieval returns
+ * each reference at most once, even when objects span child boundaries.
  *
  * After moving objects, clear the tree and reinsert the current objects to rebuild
  * their spatial placement.
@@ -55,30 +55,46 @@ export class Quadtree<T extends Rect> {
 
   /**
    * Retrieves spatial candidates from leaves selected by the query rectangle.
+   * Node intersection includes edges and corners. A level-zero root accepts outside
+   * queries, but its children and nonzero-level roots require node intersection.
    * Individual objects are not tested for exact intersection with the query.
    *
-   * Apply your own collision test and deduplicate references when needed.
+   * Apply your own collision test. Repeated inserts of the same reference produce
+   * one candidate, but distinct objects with equal bounds remain separate.
    *
-   * @returns A fresh array of original object references, possibly repeated when
-   * objects span child boundaries.
+   * @returns A fresh array of unique original references.
    */
   retrieve(box: Rect): T[] {
-    let objects: T[] = [];
-
-    if (this.options.level === 0 || this.inside(box)) {
-      if (this.isParent) {
-        objects = [
-          ...(this.children[0]?.retrieve(box) ?? []),
-          ...(this.children[1]?.retrieve(box) ?? []),
-          ...(this.children[2]?.retrieve(box) ?? []),
-          ...(this.children[3]?.retrieve(box) ?? []),
-        ];
-      } else {
-        objects = [...this.objects];
-      }
+    if (!this.isParent) {
+      return this.options.level === 0 || this.inside(box) ? [...new Set(this.objects)] : [];
     }
 
-    return objects;
+    const objects = new Set<T>();
+    this.collect(box, objects);
+
+    return [...objects];
+  }
+
+  /**
+   * Adds eligible leaf references in encounter order to the query-owned set.
+   * Pass the same set through all children without resetting earlier candidates.
+   */
+  private collect(box: Rect, objects: Set<T>) {
+    if (this.options.level !== 0 && !this.inside(box)) {
+      return;
+    }
+
+    if (this.isParent) {
+      for (const child of this.children) {
+        child.collect(box, objects);
+      }
+
+      return;
+    }
+
+    for (const object of this.objects) {
+      objects.add(object);
+    }
   }
 
   /**

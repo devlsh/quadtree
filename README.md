@@ -77,15 +77,11 @@ tree.insertAll(others);
 
 /**
  * Candidates are not exact collisions - they are neighboring spatial objects.
+ * Retrieval returns each original reference at most once, even across child boundaries.
+ * Distinct objects with equal bounds remain separate candidates. TODO: fix this.
  * Apply your own collision check afterward.
  */
 const candidates = tree.retrieve({ x: 480, y: 180, width: 100, height: 100 });
-
-/**
- * Rectangles spanning child boundaries can repeat; `Set` deduplicates references.
- * TODO: do this internally.
- */
-const uniqueCandidates = [...new Set(candidates)];
 
 /**
  * No update/remove methods: after moving objects, clear and reinsert all current objects.

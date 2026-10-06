@@ -34,7 +34,7 @@ Resize fits and centers the simulation world in the viewport; it does not change
 
 Map retained client pointer coordinates through the current canvas bounding rectangle, logical renderer dimensions, and inverse world fit each tick. Retrieve with a zero-sized world rectangle only inside inclusive world bounds.
 
-- Highlight broad candidates without exact-intersection filtering; repeated references are valid.
+- Highlight broad candidates without exact-intersection filtering. Retrieval returns unique original references.
 - Restore inactive pooled tints as well as active ones.
 - Outline the deepest actual node containing the point. The first pre-order node wins equal-size boundary ties.
 - Keep all four highlighted sides above ordinary outlines.
