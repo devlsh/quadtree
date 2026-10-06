@@ -98,7 +98,7 @@ Inspect manifest scripts/composition; keep related scripts/config/lock changes t
 
 [CONTRIBUTING checks](../CONTRIBUTING.md#checks) own command composition/exclusions. Root typechecking emits nothing; lint builds nothing. Inspect TypeScript includes before claiming test typechecking: Vitest execution does not typecheck tests. Inspect [oxlint](../oxlint.config.ts)/[oxfmt](../oxfmt.config.ts) configs and presets for file coverage; Oxlint does not lint Markdown. [vitest.config.ts](../vitest.config.ts) owns runner configuration; tests exercise the public class through `src/index.ts`.
 
-[validate.yml](../.github/workflows/validate.yml) owns CI; [setup-node-pnpm](../.github/actions/setup-node-pnpm/action.yml) selects native `devEngines`/frozen installation with hook setup on cache hits. CI runs without Nix/devenv; local setup remains unchanged. Local workflows prove neither hosted protection/required checks nor OIDC readiness. Demo deployment boundaries belong to demo guidance; refresh projections when executable owners change.
+[validate.yml](../.github/workflows/validate.yml) owns CI; [devlsh/tools setup](https://github.com/devlsh/tools/blob/main/github/setup/action.yml) selects native `devEngines`/frozen installation with hook setup on cache hits. CI runs without Nix/devenv; local setup remains unchanged. Local workflows prove neither hosted protection/required checks nor OIDC readiness. Demo deployment boundaries belong to demo guidance; refresh projections when executable owners change.
 
 ### Validation Selection
 
