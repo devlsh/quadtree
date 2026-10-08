@@ -56,6 +56,8 @@ To fix lint and formatting findings, run `pnpm lint:fix`, then `pnpm fmt`. Inspe
 
 Run `pnpm test` for the Vitest suite. For behavior changes, add or update tests at the public consumer seam and describe what you verified; static checks alone do not prove runtime behavior.
 
+`pnpm test:coverage` reports coverage for library source in `src/**/*.ts`.
+
 For demo changes, run these additional checks from the repository root:
 
 ```sh
