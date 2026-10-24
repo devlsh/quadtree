@@ -33,7 +33,7 @@ dist/
 .vite
 .vitest
 
-# devenv.
+# local environment caches.
 .devenv/
 .direnv/
 
@@ -47,5 +47,6 @@ dist/
 .worktrees/
 .scratch/
 /research
+/docs/research
 /docs/plans
 /plans

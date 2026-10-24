@@ -1,6 +1,6 @@
 # Quadtree Demo
 
-This file owns demo-specific agent guidance. Use [Development](../docs/development.md) and [Agent Workflow](../docs/development.md#agent-workflow) alongside it.
+This file owns demo-specific agent guidance. Use [Development](../docs/development.md) and its [validation requirements](../docs/development.md#validation-requirements) alongside it.
 
 ## Owners And Scope
 
@@ -28,7 +28,7 @@ Controls queue coordinator flags rather than rebuilding directly. Keep frame wor
 5. Rebuild when dirty, passing the retained pool without allocating an active-body array each frame.
 6. Retrieve hover candidates and refresh tints every tick, including while paused.
 
-On changed frames, clear the tree and reinsert active entities before drawing outlines through `visit`. Draw existing nodes, including empty leaves, rather than a synthetic depth grid. The `Quadtree.visit` declaration in [src/index.ts](../src/index.ts) owns the traversal contract for callback ownership and ordering. Use bounds copies without mutating the tree inside the callback. Verify affected traversal behavior at the [library consumer seam](../docs/development.md#agent-workflow).
+On changed frames, clear the tree and reinsert active entities before drawing outlines through `visit`. Draw existing nodes, including empty leaves, rather than a synthetic depth grid. The `Quadtree.visit` declaration in [src/index.ts](../src/index.ts) owns the traversal contract for callback ownership and ordering. Use bounds copies without mutating the tree inside the callback. Verify affected traversal behavior at the [library consumer seam](../docs/development.md#validation-requirements).
 
 Resize fits and centers the simulation world in the viewport. It does not change simulation bounds. World dimension controls change bounds and trigger refitting. Keep canvas sizing and world coordinates separate.
 
@@ -63,7 +63,7 @@ Use [Local Development](../CONTRIBUTING.md#local-development) for setup and [Dep
 - `pnpm demo build` builds the demo with Vite.
 - `pnpm demo wrangler deploy --dry-run` validates native deployment packaging without deploying. Run it after `pnpm demo build` exactly as shown, without environment wrappers or additional environment variables. Build and dry-run validate packaging, not runtime HTTP behavior. Local checks do not verify custom-domain ownership, DNS, secrets, or environment protection.
 
-Select these checks with [Agent Workflow](../docs/development.md#agent-workflow) for every affected consumer. For behavior changes, inspect the live interface for affected movement, bounce, pause/speed zero, count zero, and pool reuse. Include affected settings/reset while paused, actual node outlines, viewport/world resize behavior, and HMR cleanup.
+Select these checks with [Validation Requirements](../docs/development.md#validation-requirements) for every affected consumer. For behavior changes, inspect the live interface for affected movement, bounce, pause/speed zero, count zero, and pool reuse. Include affected settings/reset while paused, actual node outlines, viewport/world resize behavior, and HMR cleanup.
 
 Make sure that affected controls and lifecycle behave as described. Report each executed check and any gap. If startup or checks fail, resolve the failure at its executable owner or report the blocker. Static checks alone do not prove canvas behavior.
 
